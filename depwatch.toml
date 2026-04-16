@@ -1,0 +1,18 @@
+# depwatch configuration file
+
+[[projects]]
+name = "my-app"
+requirements = "requirements.txt"
+
+# [[projects]]
+# name = "another-service"
+# requirements = "services/api/requirements.txt"
+
+[alert]
+smtp_host = "smtp.example.com"
+smtp_port = 587
+sender = "depwatch@example.com"
+recipients = ["team@example.com"]
+username = ""
+password = ""
+use_tls = true
