@@ -74,6 +74,22 @@ def assess_risk(project: str, statuses: List[DependencyStatus]) -> List[RiskEntr
     return entries
 
 
+def filter_by_label(entries: List[RiskEntry], label: str) -> List[RiskEntry]:
+    """Return only entries whose risk_label matches the given label.
+
+    Args:
+        entries: List of RiskEntry objects to filter.
+        label: One of 'low', 'medium', 'high', or 'critical'.
+
+    Returns:
+        A filtered list containing only entries with the specified label.
+    """
+    valid_labels = {"low", "medium", "high", "critical"}
+    if label not in valid_labels:
+        raise ValueError(f"Invalid label {label!r}. Must be one of {sorted(valid_labels)}.")
+    return [e for e in entries if e.risk_label == label]
+
+
 def format_risk_report(entries: List[RiskEntry]) -> str:
     if not entries:
         return "No risk entries found."
