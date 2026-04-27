@@ -14,7 +14,15 @@ def load_watchlist(path: Path = DEFAULT_WATCHLIST_FILE) -> List[str]:
     """Return list of package names in the watchlist."""
     if not path.exists():
         return []
-    return json.loads(path.read_text())
+    try:
+        data = json.loads(path.read_text())
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Watchlist file '{path}' contains invalid JSON: {exc}") from exc
+    if not isinstance(data, list):
+        raise ValueError(
+            f"Watchlist file '{path}' must contain a JSON array, got {type(data).__name__}."
+        )
+    return data
 
 
 def save_watchlist(packages: List[str], path: Path = DEFAULT_WATCHLIST_FILE) -> None:
