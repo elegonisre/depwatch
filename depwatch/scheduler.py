@@ -9,9 +9,32 @@ logger = logging.getLogger(__name__)
 
 
 def parse_interval(interval_str: str) -> int:
-    """Parse interval string like '1h', '30m', '86400s' into seconds."""
+    """Parse interval string like '1h', '30m', '86400s' into seconds.
+
+    Args:
+        interval_str: A string ending in 'h' (hours), 'm' (minutes), or 's' (seconds).
+
+    Returns:
+        The equivalent number of seconds as an integer.
+
+    Raises:
+        ValueError: If the unit is unrecognised or the numeric part cannot be parsed.
+    """
+    if len(interval_str) < 2:
+        raise ValueError(
+            f"Invalid interval string '{interval_str}'. Expected format: <number><unit> (e.g. '30m')."
+        )
     unit = interval_str[-1].lower()
-    value = int(interval_str[:-1])
+    try:
+        value = int(interval_str[:-1])
+    except ValueError:
+        raise ValueError(
+            f"Invalid interval string '{interval_str}'. Numeric part '{interval_str[:-1]}' is not an integer."
+        )
+    if value <= 0:
+        raise ValueError(
+            f"Interval value must be positive, got {value}."
+        )
     if unit == 'h':
         return value * 3600
     elif unit == 'm':
