@@ -33,6 +33,16 @@ def test_save_multiple_projects(bf):
     assert "proj_a" in data and "proj_b" in data
 
 
+def test_save_overwrites_existing_project(bf):
+    """Saving a project twice should replace the previous entry, not duplicate it."""
+    save_baseline("proj", [_s("requests", "2.28.0", "2.31.0", True)], bf)
+    save_baseline("proj", [_s("flask", "2.0.0", "3.0.0", True)], bf)
+    pkgs = load_baseline("proj", bf)
+    assert pkgs is not None
+    pkg_names = [p["package"] for p in pkgs]
+    assert pkg_names == ["flask"]
+
+
 def test_load_missing_file(bf):
     assert load_baseline("proj", bf) is None
 
